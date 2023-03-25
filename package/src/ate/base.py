@@ -132,7 +132,7 @@ class ATE():
     
     def __create_bow__(self, effects: Iterable) -> dict:
         bow = dict()
-        for w, _ in effects:
+        for w, _ in tqdm(effects):
             if not w in bow:
                 bow[w] = self.__vectorize(w)
         return bow
@@ -154,10 +154,10 @@ class ATE():
 
         cosine_bow_effects = []
         bow = self.__create_bow__(effects)
-        bow_vec = list(bow.values())
-        for w, e in effects:
-            cosine_bow = cosine_similarity(bow[w], bow_vec)
-            cosine_bow_effects.append((cosine_bow, e))
+        bow_vecs = list(bow.values())
+        cosine_bow = cosine_similarity([bow[w] for w,_ in effects], bow_vecs)
+        for i, (_, e) in tqdm(enumerate(effects)):
+            cosine_bow_effects.append((cosine_bow[i], e))
         return cosine_bow_effects, bow
 
 
